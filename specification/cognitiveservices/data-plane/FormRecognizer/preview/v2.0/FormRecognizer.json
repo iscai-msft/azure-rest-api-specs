@@ -38,6 +38,9 @@
         "consumes": [
           "application/json"
         ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "trainRequest",
@@ -217,6 +220,9 @@
           "image/jpeg",
           "image/png",
           "image/tiff"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
@@ -1266,13 +1272,11 @@
         "valueDate": {
           "description": "Date value.",
           "type": "string",
-          "format": "date-time",
           "x-nullable": false
         },
         "valueTime": {
           "description": "Time value.",
           "type": "string",
-          "format": "date-time",
           "x-nullable": false
         },
         "valuePhoneNumber": {
