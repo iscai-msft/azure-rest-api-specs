@@ -279,3 +279,12 @@ uncomment the  `exclude-file` section below and add the file paths.
 #  - $(this-folder)/Microsoft.Example/stable/2010-01-01/somefile.json
 ```
 
+### Tag: package-preview-2020-06
+
+These settings apply only when `--tag=package-preview-2020-06` is specified on the command line.
+
+```yaml $(tag) == 'package-preview-2020-06'
+input-file:
+  - preview/2020-06-30-preview/TextAnalytics.json
+```
+
