@@ -214,6 +214,64 @@
         "deprecated": false
       }
     },
+    "/health": {
+      "post": {
+        "summary": "Health",
+        "description": "The API returns a list of recognized healthcare entities and relations for each valid document.",
+        "operationId": "Health",
+        "consumes": [
+          "application/json",
+          "text/json"
+        ],
+        "produces": [
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "name": "model-version",
+            "in": "query",
+            "description": "(Optional) This value indicates which model will be used for scoring. If a model-version is not specified, the API should default to the latest, non-preview version. ",
+            "type": "string"
+          },
+          {
+            "name": "showStats",
+            "in": "query",
+            "description": "(Optional) if set to true, response will contain input and document level statistics.",
+            "type": "boolean"
+          },
+          {
+            "in": "body",
+            "name": "input",
+            "description": "Collection of documents to analyze. Documents can now contain a language field to indicate the text language",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MultiLanguageBatchInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response results in 0 or more key phrases identified in each valid document",
+            "schema": {
+              "$ref": "#/definitions/KeyPhraseResult"
+            }
+          },
+          "default": {
+            "description": "Error Response",
+            "schema": {
+              "$ref": "#/definitions/TextAnalyticsError"
+            }
+          }
+        },
+        "x-ms-examples": {
+          "Successful Health request": {
+            "$ref": ".//examples//SuccessfulHealthRequest.json"
+          }
+        },
+        "deprecated": false
+      }
+    },
     "/keyPhrases": {
       "post": {
         "summary": "Key Phrases",
@@ -703,6 +761,131 @@
         }
       },
       "description": "if showStats=true was specified in the request this field will contain information about the document payload."
+    },
+    "HealthcareBatchResult": {
+      "description": "A wrapper class around a collection of results and errors.",
+      "type": "object",
+      "properties": {
+        "statistics": {
+          "$ref": "#/definitions/RequestStatistics",
+          "description": "(Optional) if showStats=true was specified in the request this field will contain information about the request payload.",
+          "readOnly": true
+        },
+        "documents": {
+          "description": "The set of successful results.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/HealthcareBatchResultItem" },
+          "readOnly": true
+        },
+        "errors": {
+          "description": "The set of error results.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/Error" },
+          "readOnly": true
+        },
+        "modelVersion": {
+          "description": "The Model version.",
+          "type": "string",
+          "readOnly": true
+        }
+      }
+    },
+    "HealthcareBatchResultItem": {
+      "description": "Contains all Health results for a given document.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Unique, non-empty document identifier.",
+          "type": "string"
+        },
+        "statistics": {
+          "$ref": "#/definitions/DocumentStatistics",
+          "description": "(Optional) if showStats=true was specified in the request this field will contain information about the document payload."
+        },
+        "entities": {
+          "description": "Gets or sets the list of recognized health entities in document.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/HealthcareEntity" }
+        },
+        "relations": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/HealthcareRelation" }
+        }
+      }
+    },
+    "HealthcareEntity": {
+      "description": "Contains information about an individual entity.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Gets or sets the unique Id of the entity (used for matching betweent relation and entity results)",
+          "type": "string"
+        },
+        "offset": {
+          "format": "int32",
+          "description": "Gets or sets the start index of the given entity in the document.",
+          "type": "integer"
+        },
+        "length": {
+          "format": "int32",
+          "description": "Gets or sets the character length of the given entity in the document.",
+          "type": "integer"
+        },
+        "text": {
+          "description": "Gets or sets the text of the given entity.",
+          "type": "string"
+        },
+        "category": {
+          "description": "Gets or sets the category of the given entity.",
+          "type": "string"
+        },
+        "confidenceScore": {
+          "format": "float",
+          "description": "Gets or sets the confidence score of the given entity.",
+          "type": "number"
+        },
+        "links": {
+          "description": "Entity links. For example UMLS ID's, ICD9/10 codes, etc.",
+          "type": "array",
+          "items": { "$ref": "#/definitions/HealthcareEntityLink" }
+        }
+      }
+    },
+    "HealthcareRelation": {
+      "description": "Contains entity pairs that are related Ex: Prescribed 100mg ibuprofen '100mg' is a dosage amount of 'ibuoprofen'.",
+      "type": "object",
+      "properties": {
+        "relationType": {
+          "description": "Gets or sets type.",
+          "type": "string"
+        },
+        "bidirectional": {
+          "description": "Gets or sets the directionality flag for the relationship. If true the relation between the entities is bidirectional, otherwise directionality is source to target.",
+          "type": "boolean"
+        },
+        "source": {
+          "description": "Gets or sets the reference to the source entity.",
+          "type": "string"
+        },
+        "target": {
+          "description": "Gets or sets reference to the target entity.",
+          "type": "string"
+        }
+      }
+    },
+    "HealthcareEntityLink": {
+      "description": "Entity Link in Healthcare Domain.",
+      "type": "object",
+      "properties": {
+        "dataSource": {
+          "description": "Entity Link Data Source.This is the catalog/list the entity link ID belongs to.  Sources include: UMLS, CHV, MSH, etc.",
+          "type": "string"
+        },
+        "id": {
+          "description": "Entity Link Concept Id. This is the specific id in the given source catalog. Example: blood pressure - source: umls, concept_id: C1272641.",
+          "type": "string"
+        }
+      }
     },
     "SentimentConfidenceScorePerLabel": {
       "type": "object",
