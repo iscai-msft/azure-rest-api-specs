@@ -252,9 +252,9 @@
         ],
         "responses": {
           "200": {
-            "description": "A successful response results in 0 or more key phrases identified in each valid document",
+            "description": "A successful call results in a list of recognized healthcare entities and relations for each valid document.",
             "schema": {
-              "$ref": "#/definitions/KeyPhraseResult"
+              "$ref": "#/definitions/HealthcareBatchResult"
             }
           },
           "default": {
@@ -774,13 +774,17 @@
         "documents": {
           "description": "The set of successful results.",
           "type": "array",
-          "items": { "$ref": "#/definitions/HealthcareBatchResultItem" },
+          "items": {
+            "$ref": "#/definitions/HealthcareBatchResultItem"
+          },
           "readOnly": true
         },
         "errors": {
           "description": "The set of error results.",
           "type": "array",
-          "items": { "$ref": "#/definitions/Error" },
+          "items": {
+            "$ref": "#/definitions/Error"
+          },
           "readOnly": true
         },
         "modelVersion": {
@@ -805,11 +809,15 @@
         "entities": {
           "description": "Gets or sets the list of recognized health entities in document.",
           "type": "array",
-          "items": { "$ref": "#/definitions/HealthcareEntity" }
+          "items": {
+            "$ref": "#/definitions/HealthcareEntity"
+          }
         },
         "relations": {
           "type": "array",
-          "items": { "$ref": "#/definitions/HealthcareRelation" }
+          "items": {
+            "$ref": "#/definitions/HealthcareRelation"
+          }
         }
       }
     },
@@ -847,7 +855,9 @@
         "links": {
           "description": "Entity links. For example UMLS ID's, ICD9/10 codes, etc.",
           "type": "array",
-          "items": { "$ref": "#/definitions/HealthcareEntityLink" }
+          "items": {
+            "$ref": "#/definitions/HealthcareEntityLink"
+          }
         }
       }
     },
