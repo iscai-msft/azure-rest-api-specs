@@ -172,9 +172,9 @@ input-file: preview/v3.1-preview.1/TextAnalytics.json
 
 ### Release 2020-06-30-preview
 
-These settings apply only when `--tag=2020-06-30-preview` is specified on the command line.
+These settings apply only when `--tag=package-preview-2020-06` is specified on the command line.
 
-``` yaml $(tag) == '2020-06-30-preview'
+``` yaml $(tag) == 'package-preview-2020-06'
 input-file: preview/2020-06-30-preview/TextAnalytics.json
 ```
 
