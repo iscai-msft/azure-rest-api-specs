@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "swagger":"2.0",
   "info": {
     "version": "v3.1-preview.2",
     "contact": {
@@ -311,8 +311,8 @@
         "description": "",
         "parameters": [
           {
-            "in": "skipPages",
-            "name": "input",
+            "in": "body",
+            "name": "skipPages",
             "description": ".",
             "required": false
           }
@@ -518,9 +518,7 @@
       "type": "object",
       "properties": {
         "value": {
-          "schema": {
             "$ref": "#/definitions/HealthcareBatchResult"
-          }
         },
         "nextLink": {
           "type": "string"
