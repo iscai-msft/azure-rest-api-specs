@@ -311,9 +311,10 @@
         "description": "",
         "parameters": [
           {
-            "in": "body",
+            "in": "query",
             "name": "skipPages",
-            "description": ".",
+            "type": "int",
+            "description": "The number of pages to skip to get the next page of results",
             "required": false
           }
         ],
