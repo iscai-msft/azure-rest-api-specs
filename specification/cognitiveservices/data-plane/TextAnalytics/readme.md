@@ -170,12 +170,12 @@ These settings apply only when `--tag=release_3_1_preview.1` is specified on the
 input-file: preview/v3.1-preview.1/TextAnalytics.json
 ```
 
-### Release 2020-06-30-preview
+### Release v3.1-Preview.2
 
-These settings apply only when `--tag=package-preview-2020-06` is specified on the command line.
+These settings apply only when `--tag=release_3_1_preview.2` is specified on the command line.
 
-``` yaml $(tag) == 'package-preview-2020-06'
-input-file: preview/2020-06-30-preview/TextAnalytics.json
+``` yaml $(tag) == 'release_3_1_preview.2'
+input-file: preview/v3.1-preview.2/TextAnalytics.json
 ```
 
 ## Swagger to SDK
@@ -293,6 +293,6 @@ These settings apply only when `--tag=package-preview-2020-06` is specified on t
 
 ```yaml $(tag) == 'package-preview-2020-06'
 input-file:
-  - preview/2020-06-30-preview/TextAnalytics.json
+  - preview/v3.1-preview.2/TextAnalytics.json
 ```
 
