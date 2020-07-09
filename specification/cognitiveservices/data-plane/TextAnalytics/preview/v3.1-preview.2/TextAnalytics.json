@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "2020-06-30-preview",
+    "version": "v3.1-preview.2",
     "contact": {
       "name": "Microsoft Cognitive Services",
       "url": "https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/",
@@ -27,7 +27,7 @@
     }
   ],
   "x-ms-parameterized-host": {
-    "hostTemplate": "{Endpoint}/text/analytics/2020-06-30-preview",
+    "hostTemplate": "{Endpoint}/text/analytics/v3.1-preview.2",
     "useSchemePrefix": false,
     "parameters": [
       {
@@ -218,7 +218,23 @@
         "deprecated": false
       }
     },
-    "/health": {
+    "/entities/healthcare/jobs": {
+      "delete": {
+        "description": "Cancel healthcare prediction job.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "query",
+            "description": "The ID of the prediction job. This is the last portion of the operationLocation returned from a successful job submission. For example http://localhost:5000/text/analytics/v3.1-preview.2/jobs/10887aa3-e4b3-475b-aedd-80d44dc2b588 the jobId is 10887aa3-e4b3-475b-aedd-80d44dc2b588.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "OK - Cancel Job request has been received."
+          }
+        }
+      },
       "post": {
         "summary": "Health",
         "description": "The API returns a list of recognized healthcare entities and relations for each valid document.",
@@ -247,18 +263,18 @@
           {
             "in": "body",
             "name": "input",
-            "description": "Collection of documents to analyze. Documents can now contain a language field to indicate the text language",
+            "description": "Storage account URI and container name and blob path which contains a collection of documents to analyze. Documents can now contain a language field to indicate the text language",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/MultiLanguageBatchInput"
+              "$ref": "#/definitions/AsyncJobInput"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "A successful call results in a list of recognized healthcare entities and relations for each valid document.",
+          "202": {
+            "description": "A successful call results in a link where the status of the submitted job can be checked via the GET operation.",
             "schema": {
-              "$ref": "#/definitions/HealthcareBatchResult"
+              "$ref": "#/definitions/JobSubmitResult"
             }
           },
           "default": {
@@ -274,6 +290,41 @@
           }
         },
         "deprecated": false
+      }
+    },
+    "/entities/healthcare/jobs/{jobId}": {
+      "get": {
+        "description": "Get details of the healthcare prediction job specified by the jobId.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/JobResponse"
+            }
+          }
+        }
+      }
+    },
+    "/entities/healthcare/jobs/{jobId}/results": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "in": "skipPages",
+            "name": "input",
+            "description": ".",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/HealthJobTaskResponse"
+            }
+          }
+        }
       }
     },
     "/keyPhrases": {
@@ -458,6 +509,76 @@
     }
   },
   "definitions": {
+    "HealthJobTaskResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "schema": {
+            "$ref": "#/definitions/HealthcareBatchResult"
+          }
+        },
+        "nextLink": {
+          "type": "string"
+        },
+        "expirationTimeUtc": {
+          "type": "string"
+        }
+      }
+    },
+    "JobResponse": {
+      "type": "object",
+      "required": [
+        "jobId",
+        "lastUpdatedTime",
+        "createdDatetime",
+        "status"
+      ],
+      "properties": {
+        "jobId": {
+          "type": "string"
+        },
+        "lastUpdatedTime": {
+          "type": "string"
+        },
+        "createdDatetime": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "JobSubmitResult": {
+      "type": "object",
+      "properties": {
+        "operationLocation": {
+          "type": "string",
+          "description": "URI reference to the submitted job. "
+        }
+      }
+    },
+    "AsyncJobInput": {
+      "type": "object",
+      "required": [
+        "storageAccountContainer",
+        "storageAccountUri",
+        "blobFolderPrefix"
+      ],
+      "properties": {
+        "storageAccountContainer": {
+          "type": "string",
+          "description": "The storage account container name where request input data is stored."
+        },
+        "storageAccountUri": {
+          "type": "string",
+          "description": "URI of storage account."
+        },
+        "blobFolderPrefix": {
+          "type": "string",
+          "description": "Specific directory in the storage container blobs to be processed."
+        }
+      }
+    },
     "MultiLanguageBatchInput": {
       "type": "object",
       "required": [
