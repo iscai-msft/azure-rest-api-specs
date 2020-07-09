@@ -324,6 +324,11 @@
               "$ref": "#/definitions/HealthJobTaskResponse"
             }
           }
+        },
+        "x-ms-examples": {
+          "Successful Sentiment request": {
+            "$ref": ".//examples//SuccessfulHealthRequest.json"
+          }
         }
       }
     },
