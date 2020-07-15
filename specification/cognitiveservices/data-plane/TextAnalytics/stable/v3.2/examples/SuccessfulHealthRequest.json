@@ -1,23 +1,14 @@
 {
     "parameters": {
         "Ocp-Apim-Subscription-Key": "{API key}",
-        "Endpoint": "{Endpoint}",
-        "input": {
-            "documents": [
-                {
-                    "language": "en",
-                    "id": "1",
-                    "text": "Prescribed 100mg ibuprofen, taken twice daily."
-                }
-            ]
-        }
+        "Endpoint": "{Endpoint}"
     },
     "responses": {
         "200": {
             "headers": {},
             "body": {
-                "nextLink": "http://example.com",
-                "expirationTimeUtc": "2020-05-29T20:49:33Z",
+                "@nextLink": "http://example.com",
+                "expirationTime": "2020-05-29T20:49:33Z",
                 "documents": [
                     {
                         "id": "1",
