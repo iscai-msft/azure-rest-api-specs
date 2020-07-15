@@ -170,12 +170,12 @@ These settings apply only when `--tag=release_3_1_preview.1` is specified on the
 input-file: preview/v3.1-preview.1/TextAnalytics.json
 ```
 
-### Release v3.1-Preview.2
+### Release v3.2
 
-These settings apply only when `--tag=release_3_1_preview.2` is specified on the command line.
+These settings apply only when `--tag=release_3_2` is specified on the command line.
 
-``` yaml $(tag) == 'release_3_1_preview.2'
-input-file: preview/v3.1-preview.2/TextAnalytics.json
+``` yaml $(tag) == 'release_3_2'
+input-file: preview/v3.2/TextAnalytics.json
 ```
 
 ## Swagger to SDK
@@ -285,14 +285,5 @@ uncomment the  `exclude-file` section below and add the file paths.
 ``` yaml $(tag) == 'all-api-versions'
 #exclude-file: 
 #  - $(this-folder)/Microsoft.Example/stable/2010-01-01/somefile.json
-```
-
-### Tag: package-preview-2020-06
-
-These settings apply only when `--tag=package-preview-2020-06` is specified on the command line.
-
-```yaml $(tag) == 'package-preview-2020-06'
-input-file:
-  - preview/v3.1-preview.2/TextAnalytics.json
 ```
 

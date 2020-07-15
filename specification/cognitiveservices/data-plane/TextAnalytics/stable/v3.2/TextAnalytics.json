@@ -1,5 +1,5 @@
 {
-  "swagger":"2.0",
+  "swagger": "2.0",
   "info": {
     "version": "v3.2",
     "contact": {
@@ -237,32 +237,31 @@
                 "description": "Contains the URL for checking operation status and/or cancelling a job. For this operation, the operation-location will be the same as the request path.",
                 "type": "string"
               }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Get details of the healthcare prediction job specified by the jobId.",
+        "parameters": [
+          {
+            "name": "showStats",
+            "in": "query",
+            "description": "(Optional) if set to true, response will contain input and document level statistics.",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/JobResponse"
+            }
           }
         }
       }
     },
-    "get": {
-      "description": "Get details of the healthcare prediction job specified by the jobId.",
-      "parameters": [
-        {
-          "name": "showStats",
-          "in": "query",
-          "description": "(Optional) if set to true, response will contain input and document level statistics.",
-          "type": "boolean"
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "OK",
-          "schema": {
-            "$ref": "#/definitions/JobResponse"
-          }
-        }
-      }
-    }
-     
-    },
-    "/entities/healthcare/jobs":{
+    "/entities/healthcare/jobs": {
       "post": {
         "summary": "Health",
         "description": "The API returns a list of recognized healthcare entities and relations for each valid document.",
@@ -281,6 +280,19 @@
             "in": "query",
             "description": "(Optional) This value indicates which model will be used for scoring. If a model-version is not specified, the API should default to the latest, non-preview version. ",
             "type": "string"
+          },
+          {
+            "name": "stringIndexType",
+            "in": "query",
+            "description": "(Optional) Specifies the method used to interpret string offsets.  Defaults to Unicode Code Points. For additional information see https://aka.ms/text-analytics-offsets",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "unicodecodepoint",
+                "utf16codeunit"
+              ],
+              "default": "unicodecodepoint"
+            }
           },
           {
             "in": "body",
@@ -543,7 +555,7 @@
       "type": "object",
       "properties": {
         "value": {
-            "$ref": "#/definitions/HealthcareBatchResult"
+          "$ref": "#/definitions/HealthcareBatchResult"
         },
         "@nextLink": {
           "type": "string"
@@ -575,7 +587,7 @@
         "status": {
           "type": "string"
         },
-        "resultsLocation":{
+        "resultsLocation": {
           "type": "string"
         }
       }
