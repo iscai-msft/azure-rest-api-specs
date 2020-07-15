@@ -1,7 +1,7 @@
 {
   "swagger":"2.0",
   "info": {
-    "version": "v3.1-preview.2",
+    "version": "v3.2",
     "contact": {
       "name": "Microsoft Cognitive Services",
       "url": "https://azure.microsoft.com/en-us/services/cognitive-services/text-analytics/",
@@ -27,7 +27,7 @@
     }
   ],
   "x-ms-parameterized-host": {
-    "hostTemplate": "{Endpoint}/text/analytics/v3.1-preview.2",
+    "hostTemplate": "{Endpoint}/text/analytics/v3.2",
     "useSchemePrefix": false,
     "parameters": [
       {
@@ -218,23 +218,51 @@
         "deprecated": false
       }
     },
-    "/entities/healthcare/jobs": {
+    "/entities/healthcare/jobs/{jobId}": {
       "delete": {
         "description": "Cancel healthcare prediction job.",
         "parameters": [
           {
             "name": "jobId",
-            "in": "query",
-            "description": "The ID of the prediction job. This is the last portion of the operationLocation returned from a successful job submission. For example http://localhost:5000/text/analytics/v3.1-preview.2/jobs/10887aa3-e4b3-475b-aedd-80d44dc2b588 the jobId is 10887aa3-e4b3-475b-aedd-80d44dc2b588.",
+            "in": "path",
+            "description": "The ID of the prediction job. This is the last portion of the operationLocation returned from a successful job submission. For example http://localhost:5000/text/analytics/v3.2/jobs/10887aa3-e4b3-475b-aedd-80d44dc2b588 the jobId is 10887aa3-e4b3-475b-aedd-80d44dc2b588.",
             "type": "string"
           }
         ],
         "responses": {
           "202": {
-            "description": "OK - Cancel Job request has been received."
+            "description": "Accepted - Cancel Job request has been received.",
+            "headers": {
+              "Operation-Location": {
+                "description": "Contains the URL for checking operation status and/or cancelling a job. For this operation, the operation-location will be the same as the request path.",
+                "type": "string"
+              }
           }
         }
-      },
+      }
+    },
+    "get": {
+      "description": "Get details of the healthcare prediction job specified by the jobId.",
+      "parameters": [
+        {
+          "name": "showStats",
+          "in": "query",
+          "description": "(Optional) if set to true, response will contain input and document level statistics.",
+          "type": "boolean"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "OK",
+          "schema": {
+            "$ref": "#/definitions/JobResponse"
+          }
+        }
+      }
+    }
+     
+    },
+    "/entities/healthcare/jobs":{
       "post": {
         "summary": "Health",
         "description": "The API returns a list of recognized healthcare entities and relations for each valid document.",
@@ -255,15 +283,9 @@
             "type": "string"
           },
           {
-            "name": "showStats",
-            "in": "query",
-            "description": "(Optional) if set to true, response will contain input and document level statistics.",
-            "type": "boolean"
-          },
-          {
             "in": "body",
             "name": "input",
-            "description": "Storage account URI and container name and blob path which contains a collection of documents to analyze. Documents can now contain a language field to indicate the text language",
+            "description": "Storage container URI and blob path which contains a collection of documents to analyze. Documents can now contain a language field to indicate the text language",
             "required": true,
             "schema": {
               "$ref": "#/definitions/AsyncJobInput"
@@ -272,9 +294,12 @@
         ],
         "responses": {
           "202": {
-            "description": "A successful call results in a link where the status of the submitted job can be checked via the GET operation.",
-            "schema": {
-              "$ref": "#/definitions/JobSubmitResult"
+            "description": "Accepted - call results in a link where the status of the submitted job can be checked via the GET operation.",
+            "headers": {
+              "Operation-Location": {
+                "description": "Contains the URL for checking operation status and/or cancelling a job.",
+                "type": "string"
+              }
             }
           },
           "default": {
@@ -292,30 +317,29 @@
         "deprecated": false
       }
     },
-    "/entities/healthcare/jobs/{jobId}": {
-      "get": {
-        "description": "Get details of the healthcare prediction job specified by the jobId.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/JobResponse"
-            }
-          }
-        }
-      }
-    },
     "/entities/healthcare/jobs/{jobId}/results": {
       "get": {
         "description": "",
         "parameters": [
           {
             "in": "query",
-            "name": "skipPages",
+            "name": "$skip",
             "type": "int",
-            "description": "The number of pages to skip to get the next page of results",
+            "description": "Skip the $skip entries in the collection. When both $top and $skip are supplied, $skip is applied first.",
             "required": false
+          },
+          {
+            "in": "query",
+            "name": "$top",
+            "type": "int",
+            "description": "Take the $top entries in the collection. When both $top and $skip are supplied, $skip is applied first.",
+            "required": false
+          },
+          {
+            "name": "showStats",
+            "in": "query",
+            "description": "(Optional) if set to true, response will contain input and document level statistics.",
+            "type": "boolean"
           }
         ],
         "responses": {
@@ -521,10 +545,10 @@
         "value": {
             "$ref": "#/definitions/HealthcareBatchResult"
         },
-        "nextLink": {
+        "@nextLink": {
           "type": "string"
         },
-        "expirationTimeUtc": {
+        "expirationTime": {
           "type": "string"
         }
       }
@@ -535,7 +559,8 @@
         "jobId",
         "lastUpdatedTime",
         "createdDatetime",
-        "status"
+        "status",
+        "resultsLocation"
       ],
       "properties": {
         "jobId": {
@@ -549,37 +574,25 @@
         },
         "status": {
           "type": "string"
-        }
-      }
-    },
-    "JobSubmitResult": {
-      "type": "object",
-      "properties": {
-        "operationLocation": {
-          "type": "string",
-          "description": "URI reference to the submitted job. "
+        },
+        "resultsLocation":{
+          "type": "string"
         }
       }
     },
     "AsyncJobInput": {
       "type": "object",
       "required": [
-        "storageAccountContainer",
-        "storageAccountUri",
-        "blobFolderPrefix"
+        "sourceUrl"
       ],
       "properties": {
-        "storageAccountContainer": {
+        "sourceUrl": {
           "type": "string",
-          "description": "The storage account container name where request input data is stored."
+          "description": "The container URI where inputs are stored."
         },
-        "storageAccountUri": {
+        "storageSource": {
           "type": "string",
-          "description": "URI of storage account."
-        },
-        "blobFolderPrefix": {
-          "type": "string",
-          "description": "Specific directory in the storage container blobs to be processed."
+          "description": "The prefix for the blob folder container inputs, if applicable"
         }
       }
     },
