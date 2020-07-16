@@ -221,14 +221,7 @@
     "/entities/healthcare/jobs/{jobId}": {
       "delete": {
         "description": "Cancel healthcare prediction job.",
-        "parameters": [
-          {
-            "name": "jobId",
-            "in": "path",
-            "description": "The ID of the prediction job. This is the last portion of the operationLocation returned from a successful job submission. For example http://localhost:5000/text/analytics/v3.2-preview.1/jobs/10887aa3-e4b3-475b-aedd-80d44dc2b588 the jobId is 10887aa3-e4b3-475b-aedd-80d44dc2b588.",
-            "type": "string"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "202": {
             "description": "Accepted - Cancel Job request has been received.",
