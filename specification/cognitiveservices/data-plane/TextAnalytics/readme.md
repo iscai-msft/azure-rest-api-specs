@@ -170,12 +170,12 @@ These settings apply only when `--tag=release_3_1_preview.1` is specified on the
 input-file: preview/v3.1-preview.1/TextAnalytics.json
 ```
 
-### Release v3.2
+### Release v3.2-Preview.1
 
-These settings apply only when `--tag=release_3_2` is specified on the command line.
+These settings apply only when `--tag=release_3_2_preview.1` is specified on the command line.
 
-``` yaml $(tag) == 'release_3_2'
-input-file: preview/v3.2/TextAnalytics.json
+``` yaml $(tag) == 'release_3_2_preview.1'
+input-file: preview/v3.2-preview.1/TextAnalytics.json
 ```
 
 ## Swagger to SDK
@@ -276,6 +276,7 @@ input-file:
   - $(this-folder)/preview/v3.0-preview.1/TextAnalytics.json
   - $(this-folder)/stable/v3.0/TextAnalytics.json
   - $(this-folder)/preview/v3.1-preview.1/TextAnalytics.json
+  - $(this-folder)/preview/v3.2-preview.1/TextAnalytics.json
 
 ```
 
