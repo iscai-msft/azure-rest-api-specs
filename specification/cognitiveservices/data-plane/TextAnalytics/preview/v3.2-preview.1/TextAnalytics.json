@@ -26,6 +26,14 @@
       "apim_key": []
     }
   ],
+  "consumes": [
+    "application/json",
+    "text/json"
+  ],
+  "produces": [
+    "application/json",
+    "text/json"
+  ],
   "x-ms-parameterized-host": {
     "hostTemplate": "{Endpoint}/text/analytics/v3.2-preview.1",
     "useSchemePrefix": false,
@@ -220,8 +228,19 @@
     },
     "/entities/healthcare/jobs/{jobId}": {
       "delete": {
+        "operationId": "DeleteHealthcareJob",
         "description": "Cancel healthcare prediction job.",
-        "parameters": [],
+        "x-ms-long-running-operation": true,
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "description": "Job identifier",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
         "responses": {
           "202": {
             "description": "Accepted - Cancel Job request has been received.",
@@ -235,6 +254,7 @@
         }
       },
       "get": {
+        "operationId": "GetHealthcareJob",
         "description": "Get details of the healthcare prediction job specified by the jobId.",
         "parameters": [
           {
@@ -243,6 +263,14 @@
             "description": "(Optional) if set to true, response will contain input and document level statistics.",
             "type": "boolean",
             "required": false
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "description": "Job identifier",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
           }
         ],
         "responses": {
@@ -259,6 +287,7 @@
       "post": {
         "summary": "Health",
         "description": "The API returns a list of recognized healthcare entities and relations for each valid document.",
+        "x-ms-long-running-operation": true,
         "operationId": "Health",
         "consumes": [
           "application/json",
@@ -280,14 +309,12 @@
             "name": "stringIndexType",
             "in": "query",
             "description": "(Optional) Specifies the method used to interpret string offsets.  Defaults to Unicode Code Points. For additional information see https://aka.ms/text-analytics-offsets",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "unicodecodepoint",
-                "utf16codeunit"
-              ],
-              "default": "unicodecodepoint"
-            },
+            "type": "string",
+            "enum": [
+              "unicodecodepoint",
+              "utf16codeunit"
+            ],
+            "default": "unicodecodepoint",
             "required": false
           },
           {
@@ -327,19 +354,21 @@
     },
     "/entities/healthcare/jobs/{jobId}/results": {
       "get": {
+        "operationId": "GetHealthcareResults",
         "description": "",
+        "x-ms-pageable": { "nextLinkName": "@nextLink", "itemName": "value" },
         "parameters": [
           {
             "in": "query",
             "name": "$skip",
-            "type": "int",
+            "type": "integer",
             "description": "Skip the $skip entries in the collection. When both $top and $skip are supplied, $skip is applied first.",
             "required": false
           },
           {
             "in": "query",
             "name": "$top",
-            "type": "int",
+            "type": "integer",
             "description": "Take the $top entries in the collection. When both $top and $skip are supplied, $skip is applied first.",
             "required": false
           },
@@ -349,6 +378,14 @@
             "description": "(Optional) if set to true, response will contain input and document level statistics.",
             "type": "boolean",
             "required": false
+          },
+          {
+            "name": "jobId",
+            "in": "path",
+            "description": "Job identifier",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
           }
         ],
         "responses": {
@@ -934,7 +971,7 @@
           "description": "The set of error results.",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Error"
+            "$ref": "#/definitions/DocumentError"
           },
           "readOnly": true
         },
