@@ -8,19 +8,43 @@ Use `--python-mode=update` if you already have a setup.py and just want to updat
 python-mode: create
 license-header: MICROSOFT_MIT_NO_VERSION
 add-credentials: true
-payload-flattening-threshold: 2
 namespace: azure.ai.formrecognizer
 package-name: azure-ai-formrecognizer
-clear-output-folder: true
 credential-scopes: https://cognitiveservices.azure.com/.default
 ```
-``` yaml $(python) && $(python-mode) == 'update'
-python:
-  no-namespace-folders: true
-  output-folder: $(python-sdks-folder)/formrecognizer/azure-ai-formrecognizer/azure/ai/formrecognizer
+
+```yaml $(multiapi)
+clear-output-folder: true
+batch:
+  - tag: release_2_0
+  - tag: release_2_1_preview
+  - multiapiscript: true
 ```
+
+``` yaml $(multiapiscript)
+output-folder: $(python-sdks-folder)/formrecognizer/azure-ai-formrecognizer/azure/ai/formrecognizer/
+clear-output-folder: false
+perform-load: false
+default-api: "2.0"
+```
+
+``` yaml $(tag) == 'release_2_0'
+namespace: azure.ai.formrecognizer.v2_0
+output-folder: $(python-sdks-folder)/formrecognizer/azure-ai-formrecognizer/azure/ai/formrecognizer/v2_0
+```
+
+``` yaml $(tag) == 'release_2_1_preview'
+namespace: azure.ai.formrecognizer.v2_1_preview_1
+output-folder: $(python-sdks-folder)/formrecognizer/azure-ai-formrecognizer/azure/ai/formrecognizer/v2_1_preview_1
+```
+
+
+``` yaml $(python) && $(python-mode) == 'update'
+no-namespace-folders: true
+output-folder: $(python-sdks-folder)/formrecognizer/azure-ai-formrecognizer/azure/ai/formrecognizer
+```
+
 ``` yaml $(python) && $(python-mode) == 'create'
-python:
-  basic-setup-py: true
-  output-folder: $(python-sdks-folder)/formrecognizer/azure-ai-formrecognizer
+basic-setup-py: true
+output-folder: $(python-sdks-folder)/formrecognizer/azure-ai-formrecognizer
 ```
