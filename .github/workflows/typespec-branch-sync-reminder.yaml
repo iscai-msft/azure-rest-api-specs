@@ -1,0 +1,71 @@
+name: TypeSpec Branch Sync Reminder
+
+on:
+  schedule:
+    - cron: "0 15 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  open-tracking-issue:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check branch divergence and open a tracking issue
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const title = "TypeSpec release sync tracking";
+            const marker = "<!-- typespec-branch-sync-tracking -->";
+
+            const [main, next] = await Promise.all([
+              github.rest.repos.getBranch({ owner, repo, branch: "main" }),
+              github.rest.repos.getBranch({ owner, repo, branch: "typespec-next" }),
+            ]);
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: "open",
+              per_page: 100,
+            });
+            const existing = issues.find(
+              (issue) => !issue.pull_request && issue.title === title && issue.body?.includes(marker),
+            );
+
+            if (existing) {
+              core.info(`Sync tracking issue #${existing.number} is already open.`);
+              return;
+            }
+
+            const body = [
+              marker,
+              "",
+              "## TypeSpec release sync is due",
+              "",
+              "@iscai-msft please review and coordinate the TypeSpec branch sync.",
+              "",
+              "Current branch tips:",
+              "",
+              `- \`main\`: ${main.data.commit.sha}`,
+              `- \`typespec-next\`: ${next.data.commit.sha}`,
+              "",
+              `Follow the [bidirectional TypeSpec branch sync runbook](https://github.com/${owner}/${repo}/blob/main/documentation/typespec-branch-sync.md).`,
+              "",
+              "- [ ] Complete and approve the Phase 1 PR: merge `typespec-next` into `main` with stable TypeSpec package versions.",
+              "- [ ] Complete and approve the Phase 2 PR: merge approved `main` into `typespec-next` while preserving its root `package.json` `\"next\"` pins.",
+              "- [ ] Verify every TypeSpec Validation - All matrix job passes (three shards on Ubuntu and Windows) for each PR.",
+              "- [ ] Land each PR without squash or rebase so the merge ancestry is preserved.",
+            ].join("\n");
+
+            const { data: issue } = await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              body,
+            });
+            core.info(`Opened sync tracking issue #${issue.number}.`);
